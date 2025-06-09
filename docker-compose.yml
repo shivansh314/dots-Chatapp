@@ -1,0 +1,27 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    env_file:
+      - .env  # Load environment variables from .env file
+    ports:
+      - "5001:5001"  
+    restart: unless-stopped
+    depends_on:
+      - mongo
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_BASE_URL=http://localhost:5001/api
+    depends_on:
+      - backend
+
+  mongo:
+    image: mongo:6
+    container_name: chatapp_mongo
+    ports:
+      - "27017:27017"
